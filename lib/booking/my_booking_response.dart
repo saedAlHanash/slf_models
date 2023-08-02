@@ -13,7 +13,8 @@ class MyBookingResponse {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "result": result.toJson(),
       };
 }
@@ -32,16 +33,19 @@ class MyBookingResult {
       items: json["items"] == null
           ? []
           : List<MyBookingItem>.from(
-              json["items"]!.map((x) => MyBookingItem.fromJson(x))),
+          json["items"]!.map((x) => MyBookingItem.fromJson(x))),
       totalCount: json["totalCount"] ?? 0,
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "items": items.map((x) => x.toJson()).toList(),
         "totalCount": totalCount,
       };
 }
+
+enum BookingState { Paid, Canceled, Done, Confirmed, PaymentFailed, Pending }
 
 class MyBookingItem {
   MyBookingItem({
@@ -60,9 +64,20 @@ class MyBookingItem {
     required this.invoiceId,
     required this.note,
     required this.promoCode,
+    required this.currency,
     required this.status,
     required this.selectedDate,
     required this.selectedTimes,
+    required this.isGAEventSent,
+    required this.tripName,
+    required this.tripStatus,
+    required this.partnerName,
+    required this.invoiceLink,
+    required this.interval,
+    required this.email,
+    required this.phone,
+    required this.fullName,
+    required this.pricingMatrixType,
   });
 
   final int id;
@@ -73,6 +88,7 @@ class MyBookingItem {
   final int childsNumber;
   final int adultsNumber;
   final num subTotal;
+  final bool isGAEventSent;
   final num discount;
   final num totalPrice;
   final int bookingType;
@@ -81,12 +97,36 @@ class MyBookingItem {
   final String note;
   final String promoCode;
   final int status;
-  final DateTime selectedDate;
+
+  final String currency;
+  final String tripName;
+  final num tripStatus;
+  final String partnerName;
+  final String invoiceLink;
+  final num interval;
+  final String email;
+  final String phone;
+  final String fullName;
+  final num pricingMatrixType;
+
+  final DateTime? selectedDate;
   final List<SelectedTime> selectedTimes;
+
 
   factory MyBookingItem.fromJson(Map<String, dynamic> json) {
     return MyBookingItem(
+      currency: json['currency'] ?? '',
+      tripName: json['tripName'] ?? '',
+      tripStatus: json['tripStatus'] ?? 0,
+      partnerName: json['partnerName'] ?? '',
+      invoiceLink: json['invoiceLink'] ?? '',
+      interval: json['interval'] ?? 0,
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      fullName: json['fullName'] ?? '',
+      pricingMatrixType: json['pricingMatrixType'] ?? 0,
       id: json["id"] ?? 0,
+      isGAEventSent: json["isGAEventSent"] ?? true,
       trip: Experience.fromJson(json["trip"] ?? {}),
       creationTime: DateTime.tryParse(json["creationTime"] ?? ""),
       lastModificationTime: DateTime.tryParse(json["lastModificationTime"] ?? ""),
@@ -102,15 +142,16 @@ class MyBookingItem {
       note: json["note"] ?? "",
       promoCode: json["promoCode"] ?? "",
       status: json["status"] ?? 0,
-      selectedDate: DateTime.tryParse(json["selectedDate"] ?? "") ?? DateTime.utc(2050),
+      selectedDate: DateTime.tryParse(json["selectedDate"] ?? ""),
       selectedTimes: json["selectedTimes"] == null
           ? []
           : List<SelectedTime>.from(
-              json["selectedTimes"]!.map((x) => SelectedTime.fromJson(x))),
+          json["selectedTimes"]!.map((x) => SelectedTime.fromJson(x))),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "id": id,
         "trip": trip.toJson(),
         "creationTime": creationTime?.toIso8601String(),
@@ -127,7 +168,7 @@ class MyBookingItem {
         "note": note,
         "promoCode": promoCode,
         "status": status,
-        "selectedDate": selectedDate.toIso8601String(),
+        "selectedDate": selectedDate?.toIso8601String(),
         "selectedTimes": selectedTimes.map((x) => x.toJson()).toList(),
       };
 }
@@ -154,7 +195,8 @@ class SelectedTime {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "id": id,
         "from": from?.toIso8601String(),
         "to": to?.toIso8601String(),
